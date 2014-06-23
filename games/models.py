@@ -18,9 +18,10 @@ class Game(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.pk:  # object is being created, thus no primary key field yet
+            super(Game, self).save(*args, **kwargs)
             for i in range(1,11):
-                f = games.models.Frame()
-                f.game_id = self.game_id
+                f = Frame()
+                f.game_id = self
                 f.order = i
                 f.save()
 
