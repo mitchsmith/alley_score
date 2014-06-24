@@ -1,0 +1,58 @@
+{% load game_tags %}
+
+<h1>{{ game.player.nickname }} Lane {{ game.lane }} {{ game.play_date }}</h1>
+
+<p>Score: {{ game.score }}</p>
+
+<p>Current Frame: {{ game.current_frame }}</p>
+
+<p>Pins: {{ request.pins }}
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+
+<table>
+    <thead>
+      <td>Frame</td>
+            <td>Balls Remaining</td>
+            <td>Ball 1</td>
+            <td>Ball 2</td>
+            <td>Partial Score</td>
+    </thead>
+    <tbody>
+        <form action="{% url 'bowl' game.id %}" method="post">
+        {% csrf_token %}
+            <input type="hidden" name="pins" value="1023">
+            <input type="submit" value="Bowl" />
+        </form>
+
+        {% for frame in game.frame_set.all %}
+            <tr>
+                <td>{{ frame.frame_number }}</td>
+                <td>{{ frame.balls }}</td>
+                <td>{{ frame.ball_1 }}</td>
+                <td>{{ frame.ball_2 }}</td>
+                <td>
+
+                    {% ifequal frame.frame_number game.current_frame.frame_number %}
+                        <span style="display:inline-block;width:10em;">{{ frame.partial_score }}</span>
+                        <input type="radio" name="pin_1" id="pin_1" value="1" />
+                        <input type="radio" name="pin_2" id="pin_2" value="2" />
+                        <input type="radio" name="pin_3" id="pin_3" value="4" />
+                        <input type="radio" name="pin_4" id="pin_4" value="8" />
+                        <input type="radio" name="pin_5" id="pin_5" value="16" />
+                        <input type="radio" name="pin_6" id="pin_6" value="32" />
+                        <input type="radio" name="pin_7" id="pin_7" value="64" />
+                        <input type="radio" name="pin_8" id="pin_8" value="128" />
+                        <input type="radio" name="pin_9" id="pin_9" value="256" />
+                        <input type="radio" name="pin_10" id="pin_10" value="512" />
+                    {% else %}
+                        {% ifequal frame.balls 0 %}
+                            <span style="display:inline-block;width:10em;">{{ frame.partial_score }}</span>
+                        {% endifequal %}
+                    {% endifequal %}
+                </td>
+            <tr>
+            {% endfor %}
+    </tbody>
+</table>
