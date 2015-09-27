@@ -27,7 +27,6 @@ def bowl(request, game_id):
     try:
         frame = game.current_frame
     except (KeyError, Game.DoesNotExist):
-        # Redisplay the poll voting form.
         return render(request, 'games/detail.html', {
             'game': game,
             'error_message': "Something went wrong.",
